@@ -16,6 +16,8 @@
  */
 package org.dakside.hulk;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.dakside.duck.appui.DuckApp;
 import org.dakside.duck.plugins.AppCentral;
 import org.dakside.duck.plugins.FunctionPool;
@@ -37,7 +39,8 @@ public class HulkApp extends DuckApp {
     }
 
     public static void main(String[] args) {
-        // Try to run the app with this:
+        //Class.forName(getModuleConfig().getProperty("modules"));
+            // Try to run the app with this:
         //java -DCUSMOD=cm.prop -DCUSMODUI=cmui.prop -jar org.dakside.duck.demo.jar
 
         try {
@@ -61,7 +64,6 @@ public class HulkApp extends DuckApp {
         FunctionPool.getInstance().scan(getCustomModules());
         HulkApp demo = new HulkApp(new MainFrame());
         demo.mainFrame.getStartPage().getGroupModulePanel().updateResourceCentre(getModuleUIFileName());
-        demo.mainFrame.getStartPage().getGroupModulePanel().load();
         // Indicate which is the main form
         AppCentral.initApp(demo.mainFrame);
         demo.start();

@@ -16,6 +16,7 @@
  */
 package org.dakside.hulk;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Logger;
@@ -24,6 +25,7 @@ import org.dakside.duck.helpers.SwingHelper;
 import org.dakside.duck.plugins.AppCentralAPI;
 import org.dakside.duck.plugins.AppTab;
 import org.dakside.duck.plugins.Message;
+import org.dakside.hulk.core.models.HulkMessages;
 import org.dakside.utils.Localizable;
 import org.dakside.utils.ResourceCentre;
 
@@ -41,7 +43,7 @@ public class MainFrame extends javax.swing.JFrame implements AppCentralAPI, Loca
     public StartPage getStartPage() {
         return startPage;
     }
-    
+
     public void showStartPage() {
         if (startPage == null) {
             startPage = new StartPage();
@@ -98,8 +100,6 @@ public class MainFrame extends javax.swing.JFrame implements AppCentralAPI, Loca
         mainToolbar = new javax.swing.JToolBar();
         btnStartPage = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jToolBar1 = new javax.swing.JToolBar();
         statusMessageLabel = new javax.swing.JLabel();
         mainTabPane = new javax.swing.JTabbedPane();
@@ -129,19 +129,6 @@ public class MainFrame extends javax.swing.JFrame implements AppCentralAPI, Loca
         });
         mainToolbar.add(btnStartPage);
         mainToolbar.add(jSeparator1);
-
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/dakside/hulk/resources/tb_new_16x16.png"))); // NOI18N
-        jButton2.setText("New Profile");
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        mainToolbar.add(jButton2);
-
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/dakside/hulk/resources/tb_save_16x16.png"))); // NOI18N
-        jButton3.setText("Save");
-        jButton3.setFocusable(false);
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        mainToolbar.add(jButton3);
 
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
@@ -195,7 +182,7 @@ public class MainFrame extends javax.swing.JFrame implements AppCentralAPI, Loca
             .addGroup(layout.createSequentialGroup()
                 .addComponent(mainToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mainTabPane, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                .addComponent(mainTabPane, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -229,8 +216,6 @@ public class MainFrame extends javax.swing.JFrame implements AppCentralAPI, Loca
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnStartPage;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JToolBar jToolBar1;
@@ -292,8 +277,25 @@ public class MainFrame extends javax.swing.JFrame implements AppCentralAPI, Loca
         }
     }
 
+    /**
+     * Close all available tab but start page
+     */
+    public void closeAllTabsButStartPage() {
+        Component[] views = mainTabPane.getComponents();
+        for (Component component : views) {
+            if (component != startPage) {
+                mainTabPane.remove(component);
+            }
+        }
+    }
+
     @Override
     public Object sendMessage(Message message) {
+        if (message == null) {
+            return null;
+        } else if (HulkMessages.CLOSE_ALL_BUT_STARTPAGE.equals(message.getMessage())) {
+            closeAllTabsButStartPage();
+        }
         return null;
     }
 

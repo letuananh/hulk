@@ -72,6 +72,17 @@ public class SQLiteHelper {
         }
     }
 
+    public SQLiteStatement buildQuery(String query, Object[] args) {
+        try {
+            SQLiteStatement statement = this.buildQuery(query);
+            bindArguments(statement, args);
+            return statement;
+        } catch (SQLiteException | DAOException ex) {
+            Logger.getLogger(SQLiteHelper.class.getName()).log(Level.SEVERE, "Cannot build query", ex);
+            return null;
+        }
+    }
+
     public boolean select(String query, SQLiteSelectJob job) {
         try {
             SQLiteStatement statement = buildQuery(query);
@@ -126,6 +137,17 @@ public class SQLiteHelper {
             while (statement.step()) {
                 job.processRow(statement);
             }
+            return true;
+        } catch (SQLiteException | DAOException e) {
+            return false;
+        }
+    }
+
+    public boolean execute(String query, Object[] args) {
+        try {
+            SQLiteStatement statement = buildQuery(query);
+            bindArguments(statement, args);
+            statement.stepThrough();
             return true;
         } catch (SQLiteException | DAOException e) {
             return false;

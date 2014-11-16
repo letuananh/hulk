@@ -83,7 +83,8 @@ public class SQLiteHelperIT {
     }
 
     /**
-     * Test of execute method, of class SQLiteHelper.
+     * Test of executeScript method, of class SQLiteHelper.<br/>
+     * Normally this will be used for creating database structure
      *
      * @throws java.lang.Exception
      */
@@ -104,6 +105,9 @@ public class SQLiteHelperIT {
         System.out.println("buildQuery");
         String query = "SELECT * FROM meta;";
         SQLiteStatement result = instance.buildQuery(query);
+        assertNotNull(result);
+
+        result = instance.buildQuery("SELECT * FROM meta WHERE title=?", new Object[]{"English"});
         assertNotNull(result);
     }
 
@@ -141,6 +145,27 @@ public class SQLiteHelperIT {
     public void testShutdown() throws DAOException, ArgumentException {
         instance.close();
         assertTrue(instance.isClosed());
+    }
+
+    public void testExecuteQuery() throws SQLiteException, Exception {
+        testExecuteScript();
+        SQLiteStatement st = instance.buildQuery("SELECT * FROM meta WHERE title=?", new Object[]{"English"});
+        assertTrue(st.hasRow());
+        assertEquals("title", st.getColumnName(0));
+        assertEquals("code", st.getColumnName(1));
+        assertTrue(st.step());
+        assertEquals("English", st.columnString(0));
+        assertEquals("en", st.columnString(1));
+        st.dispose();
+        assertTrue(st.isDisposed());
+        instance.close();
+        assertTrue(instance.isClosed());
+    }
+
+    public void testUpdate() throws Exception {
+        testExecuteScript();
+        instance.execute("UPDATE meta SET code=? WHERE title=?", new Object[]{"eng", "English"});
+        
     }
 
 }
