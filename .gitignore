@@ -66,5 +66,7 @@ dakutils
 /dakside.hulk/build/
 /dakside.hulk.core/nbproject/private/
 /dakside.hulk/dist/
+/dakside.hulk/hulk.7z
 /dakside.hulk.core/build/
 /dakside.hulk.core/dist/
+launch4j.xml
