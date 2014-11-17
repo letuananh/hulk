@@ -23,11 +23,78 @@ package org.dakside.hulk.core.models;
  */
 public class Word {
 
-    private String lemma;
+    private String wordID;
+    //private String lemma;
     private String ipa;
     private String gloss;
     private String comment;
-    private String wnSynset; // WordNet Synset ID
-    private String iliId; // Inter-lingual Index ID
+    //private String wnSynset; // WordNet Synset ID
+    //private String iliId; // Inter-lingual Index ID
+
+    public Word() {
+    }
+
+    public Word(String wordID, String ipa, String gloss, String comment) {
+        this.wordID = wordID;
+        this.ipa = ipa;
+        this.gloss = gloss;
+        this.comment = comment;
+    }
+
+    /**
+     * @return the wordID
+     */
+    public String getWordID() {
+        return wordID;
+    }
+
+    /**
+     * @param wordID the wordID to set
+     */
+    public void setWordID(String wordID) {
+        this.wordID = wordID;
+    }
+
+    /**
+     * @return the ipa
+     */
+    public String getIpa() {
+        return ipa;
+    }
+
+    /**
+     * @param ipa the ipa to set
+     */
+    public void setIpa(String ipa) {
+        this.ipa = ipa;
+    }
+
+    /**
+     * @return the gloss
+     */
+    public String getGloss() {
+        return gloss;
+    }
+
+    /**
+     * @param gloss the gloss to set
+     */
+    public void setGloss(String gloss) {
+        this.gloss = gloss;
+    }
+
+    /**
+     * @return the comment
+     */
+    public String getComment() {
+        return comment;
+    }
+
+    /**
+     * @param comment the comment to set
+     */
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
 }

@@ -46,7 +46,7 @@ public class SqliteLanguageDAOTest extends SqliteDAOTest {
      */
     @Test
     public void testGetAllVarieties() throws Exception {
-        db.getProjectDAO().setupProject();
+        setupProject();
         testCreateVariety();
         System.out.println("getAllVarieties");
         LanguageDAO instance = db.getLanguageDAO();
@@ -60,9 +60,9 @@ public class SqliteLanguageDAOTest extends SqliteDAOTest {
      */
     @Test
     public void testCreateVariety() throws Exception {
-        db.getProjectDAO().setupProject();
+        setupProject();
         System.out.println("createVariety");
-        Variety variety = new Variety("English", "en", "English as we know it");
+        Variety variety = new Variety(-1, "English", "en", "English as we know it");
         LanguageDAO instance = db.getLanguageDAO();
         boolean result = instance.createVariety(variety);
         assertEquals(true, result);

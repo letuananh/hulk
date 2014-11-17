@@ -16,8 +16,6 @@
  */
 package org.dakside.hulk;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.dakside.duck.appui.DuckApp;
 import org.dakside.duck.plugins.AppCentral;
 import org.dakside.duck.plugins.FunctionPool;

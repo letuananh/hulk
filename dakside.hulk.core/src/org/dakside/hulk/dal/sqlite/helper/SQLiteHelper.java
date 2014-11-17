@@ -179,7 +179,6 @@ public class SQLiteHelper {
     public boolean executeScript(String script) {
         try {
             getConnection().exec(script);
-            System.out.println("DONE!");
             return true;
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Cannot execute script", ex);

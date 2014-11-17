@@ -23,11 +23,14 @@ package org.dakside.hulk.core.models;
  */
 public class Variety {
 
+    private int varietyID;
     private String name;
     private String code;
     private String description;
+    public static final Variety[] ARRAY = new Variety[0];
 
-    public Variety(String name, String code, String description) {
+    public Variety(int varietyID, String name, String code, String description) {
+        this.varietyID = varietyID;
         this.name = name;
         this.code = code;
         this.description = description;
@@ -74,6 +77,19 @@ public class Variety {
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    
+
+    /**
+     * @return the varietyID
+     */
+    public int getVarietyID() {
+        return varietyID;
+    }
+
+    /**
+     * @param varietyID the varietyID to set
+     */
+    public void setVarietyID(int varietyID) {
+        this.varietyID = varietyID;
+    }
+
 }

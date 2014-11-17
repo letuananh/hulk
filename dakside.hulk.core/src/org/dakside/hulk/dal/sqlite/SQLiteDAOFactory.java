@@ -37,8 +37,8 @@ public class SQLiteDAOFactory extends DAOFactory {
 
     private SqliteLanguageDAO languageDAO;
     private SqliteProjectDAO projectDAO;
-    private ConnectionInfo connInfo;
-    private SQLiteHelper helper;
+    private final ConnectionInfo connInfo;
+    private final SQLiteHelper helper;
 
     @Override
     public synchronized LanguageDAO getLanguageDAO() {
@@ -54,8 +54,9 @@ public class SQLiteDAOFactory extends DAOFactory {
 
     @Override
     public void shutdown() {
-        //Doing nothing
         this.helper.close();
+        this.languageDAO = null;
+        this.projectDAO = null;
     }
 
     public SQLiteDAOFactory(ConnectionInfo connectionInfo) throws DAOException {

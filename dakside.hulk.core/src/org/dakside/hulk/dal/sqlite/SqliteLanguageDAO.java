@@ -34,36 +34,41 @@ import org.dakside.utils.Validator;
  * @author Le Tuan Anh <tuananh.ke@gmail.com>
  */
 class SqliteLanguageDAO implements LanguageDAO {
-    
+
     private static final Logger logger = Logger.getLogger(SqliteLanguageDAO.class.getName());
     private ResourceCentre rc;
     private SQLiteHelper helper;
-    
+
     SqliteLanguageDAO(SQLiteHelper helper) throws ArgumentException {
         Validator.argumentNotNull(helper);
         this.helper = helper;
         rc = ResourceCentre.getInstance(this);
     }
-    
+
+    private static final String SELECT_VARIETIES
+            = "SELECT varietyID, langName, langCode, desc FROM variety;";
+
     @Override
     public List<Variety> getAllVarieties() {
         final List<Variety> varieties = new ArrayList<>();
-        helper.select("SELECT * FROM variety;", null, new SQLiteRowRetriever() {
-            
+        helper.select(SELECT_VARIETIES, null, new SQLiteRowRetriever() {
+
             @Override
             public void processRow(SQLiteStatement statement) throws SQLiteException {
-                String langName = statement.columnString(0);
-                String langCode = statement.columnString(1);
-                String desc = statement.columnString(2);
-                varieties.add(new Variety(langName, langCode, desc));
+                int idx = 0;
+                int varietyID = statement.columnInt(idx++);
+                String langName = statement.columnString(idx++);
+                String langCode = statement.columnString(idx++);
+                String desc = statement.columnString(idx++);
+                varieties.add(new Variety(varietyID, langName, langCode, desc));
             }
         });
         return varieties;
     }
-    
+
     private static final String INSERT_VARIETY_QUERY
             = "INSERT INTO variety (langName, langCode, desc) VALUES (?,?,?)";
-    
+
     @Override
     public boolean createVariety(Variety variety) throws ArgumentException {
         Validator.argumentNotNull(variety);
@@ -71,5 +76,5 @@ class SqliteLanguageDAO implements LanguageDAO {
             variety.getName(), variety.getCode(), variety.getDescription()
         });
     }
-    
+
 }

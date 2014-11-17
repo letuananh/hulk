@@ -26,12 +26,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.event.EventListenerList;
 import org.dakside.dao.AbstractDAOFactory;
+import org.dakside.dao.ConnectionInfo;
+import org.dakside.dao.DAOException;
 import org.dakside.duck.appui.GroupModulePanel;
 import org.dakside.duck.helpers.SwingHelper;
 import org.dakside.duck.plugins.AppCentral;
 import org.dakside.duck.plugins.FunctionPool;
 import org.dakside.duck.plugins.Message;
+import org.dakside.exceptions.ArgumentException;
+import org.dakside.hulk.core.Configuration;
 import org.dakside.hulk.core.models.HulkMessages;
+import org.dakside.hulk.dal.DAOFactory;
 import org.dakside.utils.SystemHelper;
 
 /**
@@ -113,7 +118,7 @@ public class StartPage extends JPanel {
             }
         });
 
-        btnOpen.setText("Select File");
+        btnOpen.setText("Open Project");
         btnOpen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnOpenActionPerformed(evt);
@@ -121,7 +126,6 @@ public class StartPage extends JPanel {
         });
 
         btnLoad.setText("Load");
-        btnLoad.setEnabled(false);
         btnLoad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoadActionPerformed(evt);
@@ -262,8 +266,24 @@ public class StartPage extends JPanel {
         JFileChooser chooser = new JFileChooser(getCurrentFile());
         if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             File filePath = chooser.getSelectedFile();
-            txtDBPath.setText(filePath.getAbsolutePath());
+            if (filePath.exists()) {
+                txtDBPath.setText(filePath.getAbsolutePath());
+            }
         }
+    }
+
+    private DAOFactory getDAO(String filepath) throws ArgumentException, DAOException {
+        return DAOFactory.getDAOFactory(getConnectionInfo(filepath));
+    }
+
+    private ConnectionInfo getConnectionInfo(String filepath) throws ArgumentException {
+        return new ConnectionInfo(filepath, AbstractDAOFactory.SQLITE_DATABASE);
+    }
+
+    private ConnectionInfo getConnectionInfo() throws ArgumentException {
+        String dbPath = txtDBPath.getText();
+        int dbType = AbstractDAOFactory.SQLITE_DATABASE;
+        return new ConnectionInfo(dbPath, dbType);
     }
 
     public void createDBFile() {
@@ -278,7 +298,15 @@ public class StartPage extends JPanel {
                         "Confirmation",
                         JOptionPane.YES_NO_OPTION);
                 if (status == JOptionPane.YES_OPTION) {
-                    filePath.delete();
+                    try {
+                        filePath.delete();
+                        String dbPath = filePath.getAbsolutePath();
+                        DAOFactory dao = getDAO(dbPath);
+                        dao.getProjectDAO().setupProject();
+                        dao.shutdown();
+                    } catch (DAOException | ArgumentException ex) {
+                        logger.log(Level.SEVERE, null, ex);
+                    }
                 }
             }
             txtDBPath.setText(filePath.getAbsolutePath());
@@ -289,10 +317,14 @@ public class StartPage extends JPanel {
         try {
             String dbPath = txtDBPath.getText();
             int dbType = AbstractDAOFactory.SQLITE_DATABASE;
+            Configuration.getInstance().setDbInfo(new ConnectionInfo(dbPath, dbType));
 
-            //Configuration.getInstance().setInfo(new ConnectionInfo(dbPath, dbType));
-            //TODO: if connect to database
-            if (true) {
+            // Try to connect to database
+            DAOFactory dao = Configuration.getInstance().getDb();
+            boolean isValidDB = dao.getProjectDAO().validateProject();
+            dao.shutdown();
+            
+            if (isValidDB) {
                 //XXX can get DAO factory -> info correct
                 groupModulePanel.activate();
                 //TODO can we do this smarter?
@@ -306,6 +338,9 @@ public class StartPage extends JPanel {
                 ///Configuration.getInstance().saveLastDatabaseFile(dbPath);
                 AppCentral.getAPIDelegate().setAppTitle(dbPath);
                 fireActiveStateChanged(null);
+            }
+            else{
+                System.out.println("INVALID PROJECT FILE");
             }
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
@@ -335,10 +370,10 @@ public class StartPage extends JPanel {
         //Try to shutdown database
         try {
             //TODO: shut down the database here
-            // Configuration.getInstance().getDAOFactory().shutdown();
-            // Configuration.getInstance().setInfo(null);
+            Configuration.getInstance().clearDb();
+            Configuration.getInstance().setDbInfo(null);
         } catch (NullPointerException ex) {
-            Logger.getLogger(StartPage.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         }
 
         groupModulePanel.deactivate();

@@ -71,7 +71,8 @@
 
     -->
     <target name="-post-jar">
-        <copy file="${src.dir}/../../dakside.hulk.core/dist/dakside.hulk.core.jar" todir="${dist.dir}/lib/"/>
+        <copy file="${src.dir}/../../dakside.hulk.core/dist/org.dakside.hulk.core.jar" todir="${dist.dir}/lib/"/>
+        <copy file="${src.dir}/../../lib/libsqlite4java-linux-i386.so" todir="${dist.dir}/lib/"/>
         <copy file="${src.dir}/config/modules.properties" todir="${dist.dir}"/>
         <!--<copy file="${src.dir}/../cres/shacc.sh" tofile="${dist.dir}/shacc.sh"/>-->
     </target>

@@ -14,16 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.dakside.hulk.dal.sqlite;
+package org.dakside.hulk.core.models;
 
-import com.almworks.sqlite4java.SQLiteException;
-import com.almworks.sqlite4java.SQLiteStatement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Le Tuan Anh <tuananh.ke@gmail.com>
  */
-public interface SQLiteRowRetriever {
+public class Folder {
 
-    void processRow(SQLiteStatement statement) throws SQLiteException;
+    int folderID;
+    List<Variety> varieties;
+
+    public Folder() {
+    }
+
+    public Folder(int folderID) {
+        this.folderID = folderID;
+        this.varieties = new ArrayList<>();
+    }
+
 }

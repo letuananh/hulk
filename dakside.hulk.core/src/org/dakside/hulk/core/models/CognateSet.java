@@ -14,12 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.dakside.hulk.dal.sqlite;
+package org.dakside.hulk.core.models;
+
+import java.util.ArrayList;
 
 /**
  *
  * @author Le Tuan Anh <tuananh.ke@gmail.com>
  */
-public interface SQLiteSelectJob extends SQLiteJob, SQLiteRowRetriever {
+public class CognateSet extends ArrayList<Cognate> {
 
+    private int cognateSetID;
+    private String label;
 }

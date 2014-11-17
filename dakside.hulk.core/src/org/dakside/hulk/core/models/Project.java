@@ -16,8 +16,6 @@
  */
 package org.dakside.hulk.core.models;
 
-import java.util.Date;
-
 /**
  * Project information
  *
@@ -28,8 +26,75 @@ public class Project {
     private String title;
     private String authors;
     private String description;
-    private String license;
-    private Date createdDate;
-    private Date modifiedDate;
+    private int version;
+    //private String license;
+    //private Date createdDate;
+    //private Date modifiedDate;
+
+    public Project() {
+    }
+    
+    public Project(String title, String authors, String description, int version) {
+        this.title = title;
+        this.authors = authors;
+        this.description = description;
+        this.version = version;
+    }
+
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * @param title the title to set
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * @return the authors
+     */
+    public String getAuthors() {
+        return authors;
+    }
+
+    /**
+     * @param authors the authors to set
+     */
+    public void setAuthors(String authors) {
+        this.authors = authors;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return the version
+     */
+    public int getVersion() {
+        return version;
+    }
+
+    /**
+     * @param version the version to set
+     */
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
 }

@@ -17,8 +17,12 @@
 package org.dakside.hulk.dal.sqlite;
 
 import java.util.List;
+import org.dakside.dao.DAOException;
+import org.dakside.exceptions.ArgumentException;
+import org.dakside.hulk.core.models.Project;
 import org.dakside.hulk.dal.ProjectDAO;
 import org.dakside.utils.FileUtil;
+import org.dakside.utils.Validator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,13 +45,24 @@ public class SqliteProjectDAOTest extends SqliteDAOTest {
     public static void tearDownClass() {
     }
 
+    @Override
+    public void setUp() throws DAOException, ArgumentException {
+        super.setUp(); 
+    }
+    
+    
+
+    private ProjectDAO getProjectDAO() {
+        return db.getProjectDAO();
+    }
+
     /**
      * Test of setupProject method, of class SqliteProjectDAO.
      */
     @Test
     public void testSetupProject() {
         System.out.println("setupProject");
-        ProjectDAO instance = db.getProjectDAO();
+        ProjectDAO instance = getProjectDAO();
         boolean expResult = true;
         boolean result = instance.setupProject();
         assertEquals(expResult, result);
@@ -60,7 +75,7 @@ public class SqliteProjectDAOTest extends SqliteDAOTest {
     public void testValidateProject() {
         testSetupProject();
         System.out.println("validateProject");
-        ProjectDAO instance = db.getProjectDAO();
+        ProjectDAO instance = getProjectDAO();
         boolean expResult = true;
         boolean result = instance.validateProject();
         assertEquals(expResult, result);
@@ -68,7 +83,7 @@ public class SqliteProjectDAOTest extends SqliteDAOTest {
 
     @Test
     public void testGetResource() {
-        ProjectDAO instance = db.getProjectDAO();
+        ProjectDAO instance = getProjectDAO();
         List<String> lines = FileUtil.readLines(instance, "resources/setup.sql");
         assertNotNull(lines);
         assertTrue("Cannot read file", lines.size() > 0);
@@ -76,6 +91,39 @@ public class SqliteProjectDAOTest extends SqliteDAOTest {
         //System.out.printf("\n---\nContent = [[[%s]]]\n---\n", content);
         assertNotNull(content);
         assertTrue("", content.length() > 0);
+    }
+
+    /**
+     * Test of getProjectInfo method, of class SqliteProjectDAO.
+     */
+    @Test
+    public void testGetProjectInfo() {
+        System.out.println("getProjectInfo");
+        setupProject();
+        ProjectDAO instance = getProjectDAO();
+        Project result = instance.getProjectInfo();
+        assertNotNull(result);
+        assertTrue("Invalid title", Validator.isValid(result.getTitle()));
+        assertTrue("Invalid authors", Validator.isValid(result.getAuthors()));
+        assertTrue("Invalid description", Validator.isValid(result.getDescription()));
+    }
+
+    /**
+     * Test of saveProjectInfo method, of class SqliteProjectDAO.
+     */
+    @Test
+    public void testSaveProjectInfo() throws Exception {
+        System.out.println("saveProjectInfo");
+        setupProject();
+        ProjectDAO instance = getProjectDAO();
+        Project info = instance.getProjectInfo();
+        String updatedAuthor = "Le Tuan Anh";
+        info.setAuthors(updatedAuthor);
+        boolean result = instance.saveProjectInfo(info);
+        assertTrue(result);
+        info = instance.getProjectInfo();
+        assertNotNull(info);
+        assertEquals(info.getAuthors(), updatedAuthor);
     }
 
 }

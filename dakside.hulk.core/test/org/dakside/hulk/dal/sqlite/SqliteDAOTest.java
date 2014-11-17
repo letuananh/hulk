@@ -22,11 +22,13 @@ import org.dakside.exceptions.ArgumentException;
 import org.dakside.hulk.dal.DAOFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 
 /**
  *
  * @author Le Tuan Anh <tuananh.ke@gmail.com>
  */
+@Ignore
 public class SqliteDAOTest {
 
     protected DAOFactory db;
@@ -40,5 +42,11 @@ public class SqliteDAOTest {
     public void tearDown() throws IOException {
         db.shutdown();
         SQLiteTestHelper.deleteTempDBFile();
+    }
+
+    protected void setupProject() {
+        if (!db.getProjectDAO().validateProject()) {
+            db.getProjectDAO().setupProject();
+        }
     }
 }

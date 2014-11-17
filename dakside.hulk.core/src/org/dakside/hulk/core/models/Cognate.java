@@ -20,10 +20,12 @@ import java.util.List;
 
 /**
  * Information about a cognate
+ *
  * @author Le Tuan Anh <tuananh.ke@gmail.com>
  */
 public class Cognate {
 
+    private int cognateID;
     private Word origin;
     private String finalForm;
     private List<Transformation> transformations;

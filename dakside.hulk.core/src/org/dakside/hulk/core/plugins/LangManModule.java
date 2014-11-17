@@ -19,7 +19,8 @@ package org.dakside.hulk.core.plugins;
 import java.awt.Component;
 import org.dakside.duck.plugins.Function;
 import org.dakside.duck.plugins.Unloadable;
-import org.dakside.hulk.core.plugins.langman.LangMan;
+import org.dakside.hulk.core.plugins.langman.LangManView;
+import org.dakside.hulk.core.plugins.langman.ProjectInfoView;
 
 /**
  *
@@ -27,18 +28,29 @@ import org.dakside.hulk.core.plugins.langman.LangMan;
  */
 public class LangManModule implements Unloadable {
 
-    private static LangMan langManForm;
+    private static LangManView langManForm;
+    private static ProjectInfoView projectInfoView;
 
     @Override
     public void unload() {
         langManForm = null;
+        projectInfoView = null;
+    }
+
+    @Function(Text = "ProjectInfo", Description = "ProjectInfoDesc",
+            IconPath = "icon_langman", Category = "Varieties", Location = Function.STARTPAGE)
+    public synchronized Component showProjectInfo() {
+        if (projectInfoView == null) {
+            projectInfoView = new ProjectInfoView();
+        }
+        return projectInfoView;
     }
 
     @Function(Text = "LangManView", Description = "LangManViewDesc",
             IconPath = "icon_langman", Category = "Varieties", Location = Function.STARTPAGE)
     public synchronized Component showLangViewStartPage() {
         if (langManForm == null) {
-            langManForm = new LangMan();
+            langManForm = new LangManView();
         }
         return langManForm;
     }

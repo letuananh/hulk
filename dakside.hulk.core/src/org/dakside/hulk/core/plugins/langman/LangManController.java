@@ -14,38 +14,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.dakside.hulk.dal;
+package org.dakside.hulk.core.plugins.langman;
 
 import org.dakside.exceptions.ArgumentException;
-import org.dakside.hulk.core.models.Project;
+import org.dakside.hulk.core.Configuration;
+import org.dakside.hulk.core.models.Variety;
 
 /**
  *
  * @author Le Tuan Anh <tuananh.ke@gmail.com>
  */
-public interface ProjectDAO {
-
-    /**
-     * Validate a project struture<br/>
-     * Check tables, relations, etc.
-     *
-     * @return true if all required tables & relations are available
-     */
-    boolean validateProject();
-
-    /**
-     * Setup a project if needed
-     *
-     * @return true if the project has been setup successfully
-     */
-    boolean setupProject();
-
-    /**
-     * Get project information (title, author, description, etc.)
-     *
-     * @return null if error was raised
-     */
-    Project getProjectInfo();
-
-    boolean saveProjectInfo(Project info) throws ArgumentException;
+public class LangManController {
+    
+    private static LangManController instance;
+    
+    private LangManController() {
+    }
+    
+    public static LangManController getInstance() {
+        if (instance == null) {
+            instance = new LangManController();
+        }
+        return instance;
+    }
+    
+    Variety[] getAllVarieties() {
+        return Configuration.getInstance().getDb().getLanguageDAO().getAllVarieties().toArray(Variety.ARRAY);
+    }
+    
+    boolean createVariety(Variety v) throws ArgumentException {
+        return Configuration.getInstance().getDb().getLanguageDAO().createVariety(v);
+    }
+    
 }

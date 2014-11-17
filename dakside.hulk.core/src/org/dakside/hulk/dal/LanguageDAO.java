@@ -26,7 +26,18 @@ import org.dakside.hulk.core.models.Variety;
  */
 public interface LanguageDAO {
 
+    /**
+     * Get all available varieties
+     * @return 
+     */
     List<Variety> getAllVarieties();
 
+    /**
+     * Create a variety
+     * @param variety
+     * @return false if error was raised
+     * @throws ArgumentException 
+     */
     boolean createVariety(Variety variety) throws ArgumentException;
+    
 }
