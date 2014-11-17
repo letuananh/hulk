@@ -16,10 +16,13 @@
  */
 package org.dakside.hulk.dal.sqlite;
 
+import java.io.IOException;
+import org.dakside.hulk.dal.sqlite.helper.SQLiteHelper;
 import org.dakside.dao.AbstractDAOFactory;
 import org.dakside.dao.ConnectionInfo;
 import org.dakside.dao.DAOException;
 import org.dakside.exceptions.ArgumentException;
+import org.dakside.utils.FileUtil;
 import org.dakside.utils.SystemHelper;
 
 /**
@@ -32,8 +35,17 @@ public class SQLiteTestHelper {
         return new SQLiteHelper(getConnectionInfo());
     }
 
-    public static ConnectionInfo getConnectionInfo() throws ArgumentException {
+    public static void deleteTempDBFile() throws IOException{
+        FileUtil.delete(getTempDBFile());
+    }
+    
+    public static String getTempDBFile() {
         String tempDBFile = SystemHelper.getTempDir() + SystemHelper.getPathSeparator() + "testsqlite.db";
-        return new ConnectionInfo(tempDBFile, AbstractDAOFactory.SQLITE_DATABASE);
+        return tempDBFile;
+    }
+
+    public static ConnectionInfo getConnectionInfo() throws ArgumentException {
+
+        return new ConnectionInfo(getTempDBFile(), AbstractDAOFactory.SQLITE_DATABASE);
     }
 }

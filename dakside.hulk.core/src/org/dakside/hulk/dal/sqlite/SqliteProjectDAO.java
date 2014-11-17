@@ -16,7 +16,14 @@
  */
 package org.dakside.hulk.dal.sqlite;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.dakside.exceptions.ArgumentException;
 import org.dakside.hulk.dal.ProjectDAO;
+import org.dakside.hulk.dal.sqlite.helper.SQLiteHelper;
+import org.dakside.utils.FileUtil;
+import org.dakside.utils.ResourceCentre;
+import org.dakside.utils.Validator;
 
 /**
  *
@@ -24,17 +31,38 @@ import org.dakside.hulk.dal.ProjectDAO;
  */
 class SqliteProjectDAO implements ProjectDAO {
 
-    public SqliteProjectDAO() {
+    private static final Logger logger = Logger.getLogger(SqliteProjectDAO.class.getName());
+
+    private ResourceCentre rc;
+    private SQLiteHelper helper;
+
+    /**
+     *
+     * @param helper helper cannot be null
+     * @throws ArgumentException
+     */
+    SqliteProjectDAO(SQLiteHelper helper) throws ArgumentException {
+        Validator.argumentNotNull(helper);
+        this.helper = helper;
+        rc = ResourceCentre.getInstance(this);
     }
 
     @Override
     public boolean validateProject() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return helper.hasTable("meta")
+                && helper.hasTable("variety");
     }
 
     @Override
     public boolean setupProject() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            String setupScript = FileUtil.read(this, "resources/setup.sql");
+            logger.info(String.format("Setup script = [[[%s]]]", setupScript));
+            return helper.executeScript(setupScript);
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
 }

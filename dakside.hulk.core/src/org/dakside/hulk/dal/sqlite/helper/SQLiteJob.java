@@ -14,19 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.dakside.hulk.dal;
+package org.dakside.hulk.dal.sqlite.helper;
 
-import java.util.List;
-import org.dakside.exceptions.ArgumentException;
-import org.dakside.hulk.core.models.Variety;
+import com.almworks.sqlite4java.SQLiteStatement;
 
 /**
  *
  * @author Le Tuan Anh <tuananh.ke@gmail.com>
  */
-public interface LanguageDAO {
+public interface SQLiteJob {
 
-    List<Variety> getAllVarieties();
+    void bindValue(SQLiteStatement statement);
 
-    boolean createVariety(Variety variety) throws ArgumentException;
 }

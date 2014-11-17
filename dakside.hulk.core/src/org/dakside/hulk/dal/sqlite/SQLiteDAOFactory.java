@@ -16,13 +16,16 @@
  */
 package org.dakside.hulk.dal.sqlite;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.dakside.dao.ConnectionInfo;
 import org.dakside.dao.DAOException;
 import org.dakside.dao.DAOHelper;
+import org.dakside.exceptions.ArgumentException;
 import org.dakside.hulk.dal.DAOFactory;
 import org.dakside.hulk.dal.LanguageDAO;
 import org.dakside.hulk.dal.ProjectDAO;
-import org.dakside.utils.Validator;
+import org.dakside.hulk.dal.sqlite.helper.SQLiteHelper;
 
 /**
  *
@@ -30,14 +33,21 @@ import org.dakside.utils.Validator;
  */
 public class SQLiteDAOFactory extends DAOFactory {
 
+    private static final Logger logger = Logger.getLogger(SQLiteDAOFactory.class.getName());
+
     private SqliteLanguageDAO languageDAO;
     private SqliteProjectDAO projectDAO;
-    private ConnectionInfo connectionInfo;
+    private ConnectionInfo connInfo;
+    private SQLiteHelper helper;
 
     @Override
     public synchronized LanguageDAO getLanguageDAO() {
         if (languageDAO == null) {
-            languageDAO = new SqliteLanguageDAO();
+            try {
+                languageDAO = new SqliteLanguageDAO(helper);
+            } catch (ArgumentException ex) {
+                Logger.getLogger(SQLiteDAOFactory.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return languageDAO;
     }
@@ -45,17 +55,23 @@ public class SQLiteDAOFactory extends DAOFactory {
     @Override
     public void shutdown() {
         //Doing nothing
+        this.helper.close();
     }
 
     public SQLiteDAOFactory(ConnectionInfo connectionInfo) throws DAOException {
         DAOHelper.daoArgumentNotNull(connectionInfo, "Connection information must not be null");
-        this.connectionInfo = connectionInfo;
+        this.connInfo = connectionInfo;
+        this.helper = new SQLiteHelper(this.connInfo);
     }
 
     @Override
     public ProjectDAO getProjectDAO() {
         if (projectDAO == null) {
-            projectDAO = new SqliteProjectDAO();
+            try {
+                projectDAO = new SqliteProjectDAO(helper);
+            } catch (ArgumentException ex) {
+                logger.log(Level.SEVERE, null, ex);
+            }
         }
         return projectDAO;
     }

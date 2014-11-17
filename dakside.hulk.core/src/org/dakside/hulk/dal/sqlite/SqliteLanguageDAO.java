@@ -16,12 +16,60 @@
  */
 package org.dakside.hulk.dal.sqlite;
 
+import com.almworks.sqlite4java.SQLiteException;
+import com.almworks.sqlite4java.SQLiteStatement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+import org.dakside.exceptions.ArgumentException;
+import org.dakside.hulk.core.models.Variety;
 import org.dakside.hulk.dal.LanguageDAO;
+import org.dakside.hulk.dal.sqlite.helper.SQLiteHelper;
+import org.dakside.hulk.dal.sqlite.helper.SQLiteRowRetriever;
+import org.dakside.utils.ResourceCentre;
+import org.dakside.utils.Validator;
 
 /**
- * 
+ *
  * @author Le Tuan Anh <tuananh.ke@gmail.com>
  */
 class SqliteLanguageDAO implements LanguageDAO {
-
+    
+    private static final Logger logger = Logger.getLogger(SqliteLanguageDAO.class.getName());
+    private ResourceCentre rc;
+    private SQLiteHelper helper;
+    
+    SqliteLanguageDAO(SQLiteHelper helper) throws ArgumentException {
+        Validator.argumentNotNull(helper);
+        this.helper = helper;
+        rc = ResourceCentre.getInstance(this);
+    }
+    
+    @Override
+    public List<Variety> getAllVarieties() {
+        final List<Variety> varieties = new ArrayList<>();
+        helper.select("SELECT * FROM variety;", null, new SQLiteRowRetriever() {
+            
+            @Override
+            public void processRow(SQLiteStatement statement) throws SQLiteException {
+                String langName = statement.columnString(0);
+                String langCode = statement.columnString(1);
+                String desc = statement.columnString(2);
+                varieties.add(new Variety(langName, langCode, desc));
+            }
+        });
+        return varieties;
+    }
+    
+    private static final String INSERT_VARIETY_QUERY
+            = "INSERT INTO variety (langName, langCode, desc) VALUES (?,?,?)";
+    
+    @Override
+    public boolean createVariety(Variety variety) throws ArgumentException {
+        Validator.argumentNotNull(variety);
+        return helper.execute(INSERT_VARIETY_QUERY, new Object[]{
+            variety.getName(), variety.getCode(), variety.getDescription()
+        });
+    }
+    
 }

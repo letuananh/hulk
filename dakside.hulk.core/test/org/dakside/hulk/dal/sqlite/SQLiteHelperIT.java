@@ -16,6 +16,8 @@
  */
 package org.dakside.hulk.dal.sqlite;
 
+import org.dakside.hulk.dal.sqlite.helper.SQLiteHelper;
+import org.dakside.hulk.dal.sqlite.helper.SQLiteSelectJob;
 import com.almworks.sqlite4java.SQLiteConnection;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
